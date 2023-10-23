@@ -5,6 +5,9 @@ import { ProjectsModule } from './projects/projects.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Project } from './projects/entities/project.entity';
+import { MulterModule } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import * as path from 'path';
 
 @Module({
   imports: [
@@ -26,6 +29,17 @@ import { Project } from './projects/entities/project.entity';
         autoLoadEntities: true,
       }),
       inject: [ConfigService], // 注入 ConfigService
+    }),
+    MulterModule.register({
+      storage: diskStorage({
+        destination: path.join(__dirname, '../upload'),
+        filename(req, file, cb) {
+          file.originalname = Buffer.from(file.originalname, 'latin1').toString(
+            'utf8',
+          );
+          cb(null, file.originalname);
+        },
+      }),
     }),
   ],
   controllers: [AppController],

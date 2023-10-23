@@ -1,7 +1,16 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { generateCustomID } from '../../utils/customId.service';
 @Entity()
 export class Project {
-  @PrimaryGeneratedColumn('uuid')
+
+  // @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn()
   id: string; // id
 
   @Column()
@@ -42,6 +51,13 @@ export class Project {
 
   @Column({ nullable: true })
   lastmodifytime?: Date;
+
+  @BeforeInsert()
+  generateCustomIDFunc() {
+    const tableCode = 'a05'; // 表编号
+    // this.id = this.customIdGeneratorService.generateCustomID(tableCode);
+    this.id = generateCustomID(tableCode);
+  }
 }
 
 // export class Project {

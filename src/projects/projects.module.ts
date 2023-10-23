@@ -3,6 +3,7 @@ import { ProjectsService } from './projects.service';
 import { ProjectsController } from './projects.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Project } from './entities/project.entity';
+// import { CustomIdGeneratorService } from '../utils/customId.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Project])],
