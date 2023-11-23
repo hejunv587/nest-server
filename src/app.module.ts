@@ -7,13 +7,21 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Project } from './projects/entities/project.entity';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { ProjectfileModule } from './projectfile/projectfile.module';
+import { DocumentModule } from './document/document.module';
+import { UserModule } from './user/user.module';
+import { AuthService } from './auth/auth.service';
+import { AuthModule } from './auth/auth.module';
 import * as path from 'path';
+import { AuthGuard } from './auth/auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
     ProjectsModule,
     ConfigModule.forRoot({
       isGlobal: true, // 表示全局范围可用
+      envFilePath: ['.env', '.env.production'],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule], // 导入 ConfigModule，以便获取配置
@@ -24,7 +32,7 @@ import * as path from 'path';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [Project],
+        // entities: [Project],
         synchronize: configService.get('DB_SYNCHRONIZE'),
         autoLoadEntities: true,
       }),
@@ -41,8 +49,19 @@ import * as path from 'path';
         },
       }),
     }),
+    ProjectfileModule,
+    DocumentModule,
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    AuthService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}

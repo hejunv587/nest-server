@@ -4,12 +4,14 @@ import {
   HttpCode,
   Param,
   Post,
+  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AppService } from './app.service';
-import { FileNameEncodePipe } from './filename.pipe';
+// import type { Response } from 'express';
+// import { join } from 'path';
 
 @Controller()
 export class AppController {
@@ -41,4 +43,11 @@ export class AppController {
       file: file.originalname,
     };
   }
+
+  // @Get('upload/:fileId')
+  // serveFile(@Param('fileId') fileId: string, @Res() res: Response): void {
+  //   // const filePath = `uploads/${fileId}`;
+  //   const url = join(__dirname, '../upload', fileId);
+  //   res.download(url);
+  // }
 }
