@@ -38,11 +38,15 @@ export class ProfileAccessService {
   }
 
   async getAccessesByProfileId(profileId: string) {
-    const profileAccesses = await this.profileAccessRepository
-      .createQueryBuilder('pa')
-      .leftJoinAndSelect('pa.access', 'access')
-      .where('pa.profileId = :id', { id: profileId })
-      .getMany();
+    const profileAccesses = await this.profileAccessRepository.find({
+      where: { profileId },
+    });
+
+    // const profileAccesses = await this.profileAccessRepository
+    //   .createQueryBuilder('pa')
+    //   .leftJoinAndSelect('pa.access', 'access')
+    //   .where('pa.profileId = :id', { id: profileId })
+    //   .getMany();
 
     const accesses = profileAccesses.map((pa) => pa.access);
 

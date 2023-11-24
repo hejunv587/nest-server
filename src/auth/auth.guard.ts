@@ -37,6 +37,7 @@ export class AuthGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
+    console.log('token', token);
     if (!token) {
       throw new UnauthorizedException();
     }
@@ -47,6 +48,9 @@ export class AuthGuard implements CanActivate {
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
       request['user'] = payload;
+      console.log('payload', payload);
+
+      console.log('user', request.user);
 
       // 获取用户profileid
       const profile = request.user.profile; //登录成功的时候会在session上写入用户的角色ID
@@ -55,6 +59,8 @@ export class AuthGuard implements CanActivate {
 
       const method = request.method;
 
+      console.log('profile', profile);
+
       //超级管理员拥有所有权限 或者 白名单中
       if (white.indexOf(path) !== -1 || profile?.profile_name === '管理员') {
         return true;
@@ -62,8 +68,11 @@ export class AuthGuard implements CanActivate {
         if (!profile) {
           throw new HttpException('请重新登陆以获取授权', HttpStatus.FORBIDDEN);
         }
+
         const access: Access[] =
-          await this.profileAccessService.getAccessesByProfileId(profile);
+          await this.profileAccessService.getAccessesByProfileId(profile.id);
+
+        console.log('access', access);
 
         if (access instanceof Array && access.length > 0) {
           const hasAuth = access.some(

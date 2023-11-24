@@ -19,9 +19,8 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-    private profileAccessService: ProfileAccessService, // @InjectRepository(ProfileAccess)
-  ) // private readonly profileAccessRepository: Repository<ProfileAccess>,
-  // @InjectRepository(Access)
+    private profileAccessService: ProfileAccessService, // @InjectRepository(ProfileAccess) // private readonly profileAccessRepository: Repository<ProfileAccess>,
+  ) // @InjectRepository(Access)
   // private accessRepository: Repository<Access>,
   {}
 
@@ -49,7 +48,11 @@ export class AuthService {
     if (res) {
       // const { password, ...result } = user;
       // return result;
-      const payload = { sub: user.id, username: user.name };
+      const payload = {
+        sub: user.id,
+        username: user.name,
+        profile: user.profile,
+      };
       return {
         access_token: await this.jwtService.signAsync(payload),
       };

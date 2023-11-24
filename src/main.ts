@@ -29,6 +29,10 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/api-docs', app, document);
 
+  app.enableCors({
+    origin: 'http://localhost:3000', // 允许访问的域名
+    credentials: true, // 允许发送身份验证凭证（例如，cookie）
+  });
   await app.listen(process.env.PORT || 3000);
 }
 bootstrap();

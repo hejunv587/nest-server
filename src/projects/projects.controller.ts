@@ -10,7 +10,9 @@ import {
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('案场项目接口')
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
@@ -21,6 +23,11 @@ export class ProjectsController {
     return this.projectsService.create(createProjectDto);
   }
 
+  @ApiOperation({
+    summary: '获取全部案场项目接口',
+    description: '获取全部案场项目接口',
+  })
+  @ApiBearerAuth()
   @Get()
   findAll() {
     return this.projectsService.findAll();

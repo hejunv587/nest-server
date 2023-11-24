@@ -52,7 +52,8 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('register')
-  @ApiOperation({ summary: '新建用户接口', description: '创建用户' })
+  @ApiOperation({ summary: '用户注册接口', description: '创建用户' })
+  @ApiBody({ type: CreateUserDto })
   @Public()
   register(@Body() createUserDto: CreateUserDto) {
     return this.authService.register(createUserDto);

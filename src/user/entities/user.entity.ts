@@ -1,8 +1,11 @@
+import { Profile } from 'src/auth/entities/profile.entity';
 import {
   BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryColumn,
   Unique,
   UpdateDateColumn,
@@ -28,8 +31,9 @@ export class User {
   @Column()
   password: string; //密码
 
-  @Column({ nullable: true })
-  profile?: string; //简档(权限控制)
+  @OneToOne(() => Profile, { eager: true })
+  @JoinColumn({ name: 'profileId' })
+  profile: Profile; //简档(权限控制)
 
   @Column({ nullable: true })
   rzsj: Date; //入职日期
