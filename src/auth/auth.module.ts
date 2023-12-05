@@ -12,23 +12,36 @@ import { Access } from './entities/access.entity';
 import { ProfileAccess } from './entities/profileaccess.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProfileService } from './profile.service';
+import { Role } from './entities/role.entity';
+import { RoleService } from './role.service';
 
 @Module({
   imports: [
     UserModule,
     // TypeOrmModule.forFeature([Profile, Access, ProfileAccess]),
-    TypeOrmModule.forFeature([Profile, Access, ProfileAccess]),
+    TypeOrmModule.forFeature([Profile, Access, ProfileAccess, Role]),
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '480m' },
     }),
   ],
-  providers: [AuthService, ProfileService, AccessService, ProfileAccessService],
+  providers: [
+    AuthService,
+    ProfileService,
+    AccessService,
+    ProfileAccessService,
+    RoleService,
+  ],
   // providers: [AuthService],
   controllers: [AuthController],
-  exports: [AuthService, ProfileService, AccessService, ProfileAccessService],
+  exports: [
+    AuthService,
+    ProfileService,
+    AccessService,
+    ProfileAccessService,
+    RoleService,
+  ],
   // exports: [AuthService],
-
 })
 export class AuthModule {}

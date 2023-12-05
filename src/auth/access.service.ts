@@ -26,7 +26,6 @@ export class AccessService {
     return access;
   }
 
-
   async updateAccess(id: string, accessDTO: AccessDTO): Promise<Access> {
     await this.accessRepository.update(id, accessDTO);
     return this.getAccessById(id);

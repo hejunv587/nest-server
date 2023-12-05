@@ -1,5 +1,6 @@
 import {
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -19,10 +20,8 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-    private profileAccessService: ProfileAccessService, // @InjectRepository(ProfileAccess) // private readonly profileAccessRepository: Repository<ProfileAccess>,
-  ) // @InjectRepository(Access)
-  // private accessRepository: Repository<Access>,
-  {}
+    private profileAccessService: ProfileAccessService, // @InjectRepository(ProfileAccess) // private readonly profileAccessRepository: Repository<ProfileAccess>, // @InjectRepository(Access) // private accessRepository: Repository<Access>,
+  ) {}
 
   async register(createUserDto: CreateUserDto): Promise<any> {
     const saltRounds = 10;
@@ -44,20 +43,26 @@ export class AuthService {
     // // TODO: Generate a JWT and return it here
     // // instead of the user object
     // return result;
+    if (!user) {
+      throw new InternalServerErrorException('User not found');
+    }
     const res = bcrypt.compareSync(pass, user?.password); // true
     if (res) {
       // const { password, ...result } = user;
       // return result;
       const payload = {
-        sub: user.id,
+        id: user.id,
+        account: user.email,
         username: user.name,
         profile: user.profile,
+        role: user.role,
+        avatar: user.avatar,
       };
       return {
         access_token: await this.jwtService.signAsync(payload),
       };
     } else {
-      throw new UnauthorizedException();
+      throw new InternalServerErrorException('Invalid password');
     }
   }
 

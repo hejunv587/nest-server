@@ -33,6 +33,11 @@ export class ProjectsController {
     return this.projectsService.findAll();
   }
 
+  @ApiOperation({
+    summary: 'id获取一个案场项目数据接口',
+    description: 'id获取一个案场项目数据接口',
+  })
+  @ApiBearerAuth()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.projectsService.findOne(id);

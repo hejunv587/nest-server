@@ -8,7 +8,6 @@ import {
 import { generateCustomID } from '../../utils/customId.service';
 @Entity()
 export class Project {
-
   // @PrimaryGeneratedColumn('uuid')
   @PrimaryColumn()
   id: string; // id

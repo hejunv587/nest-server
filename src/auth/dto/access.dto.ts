@@ -39,10 +39,10 @@ export class AccessDTO {
 
   // @IsOptional()
   // children: AccessDTO[]; // Assuming children are an array of AccessDTO, adjust as needed
-  
+
   @ApiProperty({
     description: 'meta标题',
-    example: '项目档案接口'
+    example: '项目档案接口',
   })
   @IsString()
   @IsNotEmpty()
@@ -50,7 +50,7 @@ export class AccessDTO {
 
   @ApiProperty({
     description: 'meta icon地址',
-    example: ''
+    example: '',
   })
   @IsString()
   meta_icon?: string;

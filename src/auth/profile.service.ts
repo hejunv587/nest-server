@@ -22,7 +22,7 @@ export class ProfileService {
   }
 
   async getAllProfiles(): Promise<Profile[]> {
-    return await this.profileRepository.find()
+    return await this.profileRepository.find();
   }
 
   async updateProfile(

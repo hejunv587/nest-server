@@ -16,11 +16,11 @@ export class HttpFilter implements ExceptionFilter {
 
     const status = exception.getStatus();
 
-    const currentTime = new Date();
-    const beijingTime = currentTime.toLocaleString('en-US', {
-      timeZone: 'Asia/Shanghai',
-      hour12: false, // 24-hour format
-    });
+    // const currentTime = new Date();
+    // const beijingTime = currentTime.toLocaleString('en-US', {
+    //   timeZone: 'Asia/Shanghai',
+    //   hour12: false, // 24-hour format
+    // });
 
     response.status(status).json({
       message: exception.message,

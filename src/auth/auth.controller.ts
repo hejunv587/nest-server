@@ -5,11 +5,11 @@ import {
   HttpCode,
   HttpStatus,
   Get,
-  UseGuards,
-  Request,
   Patch,
   Delete,
   Param,
+  Req,
+  Res,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -30,6 +30,9 @@ import { AccessDTO } from './dto/access.dto';
 import { AccessService } from './access.service';
 import { ProfileAccessDTO } from './dto/profileaccess.dto';
 import { ProfileAccessService } from './profileaccess.service';
+import { RoleDTO } from './dto/role.dto';
+import { RoleService } from './role.service';
+import * as svgCaptcha from 'svg-captcha';
 
 @Controller('auth')
 @ApiTags('权限接口')
@@ -39,7 +42,34 @@ export class AuthController {
     private profileService: ProfileService,
     private accessService: AccessService,
     private profileAccessService: ProfileAccessService,
+    private roleService: RoleService,
   ) {}
+
+  @HttpCode(HttpStatus.OK)
+  @Get('captchaImage')
+  @ApiOperation({ summary: '获取验证码图片', description: '获取验证码图片' })
+  @Public()
+  createCaptcha(@Req() req) {
+    const captcha = svgCaptcha.create({
+      size: 4, //生成几个验证码
+      fontSize: 44, //文字大小
+      width: 92, //宽度
+      height: 44, //高度
+      background: '#cc9966', //背景颜色
+    });
+    req.session.code = captcha.text; //存储验证码记录到session
+    // res.type('image/svg+xml');
+    // res.send(captcha.data);
+    // const base64Image = `data:image/svg+xml;base64,${Buffer.from(
+    //   captcha.data,
+    // ).toString('base64')}`;
+    const base64Image = Buffer.from(captcha.data).toString('base64');
+
+    return {
+      captchaEnabled: true,
+      img: base64Image,
+    };
+  }
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
@@ -60,10 +90,13 @@ export class AuthController {
   }
 
   // @UseGuards(AuthGuard)
-  @Get('profile')
-  @ApiOperation({ summary: '权限测试接口', description: '测试接口' })
+  @Get('getuserinfo')
+  @ApiOperation({
+    summary: '获取用户信息',
+    description: '获取用户信息,根据token获取',
+  })
   @ApiBearerAuth()
-  getProfile(@Request() req) {
+  getUserInfo(@Req() req) {
     return req.user;
   }
 
@@ -171,5 +204,28 @@ export class AuthController {
   @ApiParam({ name: 'profileid', description: 'profile ID' })
   getAccessByProfileId(@Param('profileid') profileid: string) {
     return this.profileAccessService.getAccessesByProfileId(profileid);
+  }
+
+  @ApiOperation({
+    summary: '新建角色关系',
+    description: '新建角色关系,为user指定role,展现层级关系',
+  })
+  @Post('role')
+  @ApiBody({ type: RoleDTO })
+  @ApiBearerAuth()
+  addRole(@Body() roleDTO: RoleDTO) {
+    console.log('roleDTO', roleDTO);
+    return this.roleService.createRoleWithHierarchy(roleDTO);
+  }
+
+  @ApiOperation({
+    summary: '删除角色',
+    description: '删除角色',
+  })
+  @ApiBearerAuth()
+  @ApiParam({ name: 'id', description: 'role record ID' })
+  @Delete('role/:id')
+  deleteRole(@Param('id') id: string) {
+    return this.roleService.deleteRole(id);
   }
 }

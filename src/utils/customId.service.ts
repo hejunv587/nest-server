@@ -45,12 +45,12 @@ export const generateCustomID = (tableCode: string): string => {
   const minutes = now.getMinutes();
   const seconds = now.getSeconds();
   const milliseconds = now.getMilliseconds();
-  console.log('milliseconds', milliseconds);
+  // console.log('milliseconds', milliseconds);
 
   const hexMilliseconds =
     (milliseconds < 10 ? '00' : milliseconds < 100 ? '0' : '') +
     milliseconds.toString(16);
-    console.log('hexMilliseconds', hexMilliseconds);
+  // console.log('hexMilliseconds', hexMilliseconds);
 
   const hexTimestamp = `${hexValue(month)}${hexValue(day)}${hexValue(
     hours,
