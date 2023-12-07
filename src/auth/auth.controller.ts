@@ -33,6 +33,7 @@ import { ProfileAccessService } from './profileaccess.service';
 import { RoleDTO } from './dto/role.dto';
 import { RoleService } from './role.service';
 import * as svgCaptcha from 'svg-captcha';
+import { Access } from './entities/access.entity';
 
 @Controller('auth')
 @ApiTags('权限接口')
@@ -160,9 +161,9 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: '修改权限', description: '修改权限' })
   @ApiParam({ name: 'id', description: 'Access ID' })
-  @ApiBody({ type: AccessDTO })
-  updateAccess(@Param('id') id: string, @Body() accessDTO: AccessDTO) {
-    return this.accessService.updateAccess(id, accessDTO);
+  @ApiBody({ type: Access })
+  updateAccess(@Param('id') id: string, @Body() access: Access) {
+    return this.accessService.updateAccess(id, access);
   }
 
   @ApiOperation({ summary: '删除权限', description: '删除权限' })
@@ -203,6 +204,7 @@ export class AuthController {
   })
   @ApiParam({ name: 'profileid', description: 'profile ID' })
   getAccessByProfileId(@Param('profileid') profileid: string) {
+    console.log('getAccessByProfileId', profileid);
     return this.profileAccessService.getAccessesByProfileId(profileid);
   }
 

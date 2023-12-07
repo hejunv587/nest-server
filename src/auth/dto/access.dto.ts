@@ -33,12 +33,12 @@ export class AccessDTO {
   @IsEnum(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
   req_method: string;
 
-  // @IsOptional()
-  // @IsString()
-  // parent: string; // Assuming the parent ID is a string, adjust as needed
+  @IsOptional()
+  @IsString()
+  parent: string; // Assuming the parent ID is a string, adjust as needed
 
-  // @IsOptional()
-  // children: AccessDTO[]; // Assuming children are an array of AccessDTO, adjust as needed
+  @IsOptional()
+  children: AccessDTO[]; // Assuming children are an array of AccessDTO, adjust as needed
 
   @ApiProperty({
     description: 'meta标题',

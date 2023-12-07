@@ -26,19 +26,21 @@ export class AccessService {
     return access;
   }
 
-  async updateAccess(id: string, accessDTO: AccessDTO): Promise<Access> {
-    await this.accessRepository.update(id, accessDTO);
-    return this.getAccessById(id);
-    // const access = await this.getAccessById(id); // Check if the access exists
-    // access.parent = accessDTO.parent
-    //   ? await this.accessRepository.findOneOrFail({
-    //       where: {
-    //         id: accessDTO.parent,
-    //       },
-    //     })
-    //   : null;
-    // return await this.accessRepository.save(accessDTO);
-    // return await this.getAccessById(id);
+  async updateAccess(id: string, accessDTO: Partial<Access>): Promise<Access> {
+    const access = await this.accessRepository.findOneBy({ id });
+
+    if (!access) {
+      // handle entity not found error
+      return null;
+    }
+
+    // Update properties of the Access entity
+    this.accessRepository.merge(access, accessDTO);
+
+    // Save the updated entity
+    const result = await this.accessRepository.save(access);
+
+    return result;
   }
 
   async deleteAccess(id: string): Promise<void> {

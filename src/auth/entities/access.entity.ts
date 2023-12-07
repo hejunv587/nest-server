@@ -6,6 +6,8 @@ import {
   JoinColumn,
   PrimaryColumn,
   BeforeInsert,
+  TreeParent,
+  TreeChildren,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsIn, IsNotEmpty } from 'class-validator';
@@ -33,13 +35,13 @@ export class Access {
   @Column()
   req_method: string;
 
-  // @ApiProperty({ description: '上级', example: '/' })
-  // @TreeParent()
-  // parent: Access;
+  @ApiProperty({ description: '上级', example: '/' })
+  @TreeParent()
+  parent?: Access;
 
-  // @ApiProperty({ description: '路由路径', example: '/' })
-  // @TreeChildren()
-  // children: Access[];
+  @ApiProperty({ description: '子级菜单', example: '/' })
+  @TreeChildren()
+  children?: Access[];
 
   @ApiProperty({ description: '菜单标题', example: '菜单标题' })
   @Column()
