@@ -10,6 +10,7 @@ import {
   Param,
   Req,
   Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -98,6 +99,10 @@ export class AuthController {
   })
   @ApiBearerAuth()
   getUserInfo(@Req() req) {
+    if (!req.user) {
+      throw new UnauthorizedException('用户未登录或者token无效');
+    }
+
     return req.user;
   }
 
