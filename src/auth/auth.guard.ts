@@ -55,7 +55,7 @@ export class AuthGuard implements CanActivate {
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
       request['user'] = payload;
-      // console.log('payload', payload);
+      console.log('payload', payload);
 
       // console.log('user', request.user);
 
@@ -66,7 +66,7 @@ export class AuthGuard implements CanActivate {
 
       const method = request.method;
 
-      console.log('profile', profile);
+      console.log('profile', payload, profile);
 
       //超级管理员拥有所有权限 或者 白名单中
       if (white.indexOf(path) !== -1 || profile?.profile_name === '管理员') {

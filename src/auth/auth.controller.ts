@@ -35,6 +35,7 @@ import { RoleDTO } from './dto/role.dto';
 import { RoleService } from './role.service';
 import * as svgCaptcha from 'svg-captcha';
 import { Access } from './entities/access.entity';
+import { WxSigninDTO } from './dto/wxSignin.dto';
 
 @Controller('auth')
 @ApiTags('权限接口')
@@ -68,7 +69,7 @@ export class AuthController {
     const base64Image = Buffer.from(captcha.data).toString('base64');
 
     return {
-      captchaEnabled: true,
+      text: captcha.text,
       img: base64Image,
     };
   }
@@ -91,6 +92,14 @@ export class AuthController {
     return this.authService.register(createUserDto);
   }
 
+  @Post('wxlogin')
+  @ApiOperation({ summary: '微信登陆接口', description: '微信小程序点击登录' })
+  // @ApiBody({ code: string })
+  @Public()
+  wxSignIn(@Body() wxSignInDto: WxSigninDTO) {
+    return this.authService.wxSignIn(wxSignInDto);
+  }
+
   // @UseGuards(AuthGuard)
   @Get('getuserinfo')
   @ApiOperation({
@@ -109,7 +118,7 @@ export class AuthController {
   @Post('profile')
   @ApiOperation({ summary: '新建简档', description: '创建简档' })
   @ApiBody({ type: ProfileDto })
-  @Public()
+  @ApiBearerAuth()
   addProfile(@Body() profileDto: ProfileDto) {
     return this.profileService.createProfile(profileDto);
   }

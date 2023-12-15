@@ -16,12 +16,14 @@ import { DocumentService } from './document.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { Response } from 'express';
+import { Public } from 'src/auth/public.decorator';
 
 @Controller('document')
 export class DocumentController {
   constructor(private readonly documentService: DocumentService) {}
 
   @Post('upload')
+  @Public()
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
     const document = await this.documentService.createDocumentWithFile(file);
@@ -63,13 +65,14 @@ export class DocumentController {
   }
 
   @Get('view/:id')
+  @Public()
   async viewDocument(
     @Param('id') fileId: string,
     @Res() res: Response,
   ): Promise<void> {
     try {
       const document = await this.documentService.getDocumentById(fileId);
-
+      console.log('document', document);
       if (!document) {
         throw new NotFoundException('Document not found');
       }

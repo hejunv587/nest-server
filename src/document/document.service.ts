@@ -16,7 +16,9 @@ export class DocumentService {
   async createDocumentWithFile(file: Express.Multer.File): Promise<Document> {
     const document = new Document();
     document.filename = file.originalname;
-    document.filePath = file.path;
+    // document.filePath = file.path;
+    document.filePath = path.normalize(file.path);
+    // document.filePath = path.join(__dirname, 'upload', file.originalname);
     // document.filePath = path.relative(__dirname, file.path);
     // Set other properties as needed
     document.createtime = new Date();
