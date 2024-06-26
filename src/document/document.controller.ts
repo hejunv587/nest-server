@@ -86,6 +86,28 @@ export class DocumentController {
     }
   }
 
+  @Get('geturl/:id')
+  @Public()
+  async getDocumentUrl(
+    @Param('id') fileId: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      const document = await this.documentService.getDocumentById(fileId);
+      console.log('document', document);
+      if (!document) {
+        throw new NotFoundException('Document not found');
+      }
+
+      const filePath = document.filePath;
+      res.sendFile(filePath);
+    } catch (error) {
+      res
+        .status(error.status || 500)
+        .send(error.message || 'Internal Server Error');
+    }
+  }
+
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.documentService.findOne(+id);
