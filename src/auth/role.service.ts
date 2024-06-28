@@ -64,33 +64,70 @@ export class RoleService {
           roleDTO.gap = 0;
           const newRole = this.roleRepository.create(roleDTO);
           await this.roleRepository.save(newRole);
+          return newRole;
         }
       },
     );
   }
+
+  // private async createParentHierarchy(
+  //   entityManager: EntityManager,
+  //   parent: Role,
+  //   roleDTO: RoleDTO,
+  // ): Promise<void> {
+  //   roleDTO.parentRoleId = parent.roleId;
+  //   roleDTO.gap = roleDTO.gap + 1;
+  //   const parentHierarchy = this.roleRepository.create(roleDTO);
+
+  //   await entityManager.save(parentHierarchy);
+
+  //   if (parent.parentRoleId) {
+  //     parent = await this.roleRepository.findOne({
+  //       where: {
+  //         roleId: roleDTO.parentRoleId,
+  //         gap: 1,
+  //       },
+  //     });
+  //     if (parent) {
+  //       await this.createParentHierarchy(entityManager, parent, roleDTO);
+  //     }
+  //   }
+  // }
 
   private async createParentHierarchy(
     entityManager: EntityManager,
     parent: Role,
     roleDTO: RoleDTO,
   ): Promise<void> {
-    roleDTO.parentRoleId = parent.roleId;
-    roleDTO.gap = roleDTO.gap + 1;
-    const parentHierarchy = this.roleRepository.create(roleDTO);
+    const originalRoleId = roleDTO.roleId; // 保存原始roleId
+    let currentParent = parent;
+    let currentGap = 1; // 初始gap为1
+  
+    // while (currentParent.parentRoleId && currentParent.parentRoleId !== roleDTO.roleId) {
+    while (currentParent.parentRoleId) {
+      console.log('currentParent', currentParent); // 添加日志记录
+      console.log('currentGap', currentGap); // 添加日志记录
 
-    await entityManager.save(parentHierarchy);
-
-    if (parent.parentRoleId) {
-      parent = await this.roleRepository.findOne({
+      // roleDTO.roleId = generateCustomID('aae'); // 一直使用一个roleId
+      roleDTO.parentRoleId = currentParent.parentRoleId; // 获取更高级的parentRoleId
+      roleDTO.gap = currentGap; //更高的gap
+  
+      const parentHierarchy = this.roleRepository.create(roleDTO);
+      await entityManager.save(parentHierarchy);
+  
+      currentParent = await this.roleRepository.findOne({
         where: {
-          roleId: roleDTO.parentRoleId,
+          roleId: currentParent.parentRoleId,
           gap: 1,
         },
       });
-      if (parent) {
-        await this.createParentHierarchy(entityManager, parent, roleDTO);
-      }
+      
+      if (!currentParent) break; // 终止条件: 如果找不到父级，则退出循环
+      if (currentParent.currentLevel == 0) break; // 终止条件
+      currentGap += 1; // 增加gap
     }
+  
+    roleDTO.roleId = originalRoleId; // 恢复原始roleId
   }
 
   async getRoleById(id: string): Promise<Role | undefined> {
